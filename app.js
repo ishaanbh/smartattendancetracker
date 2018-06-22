@@ -69,8 +69,6 @@ class FacebookBot {
                     if (message.speech) {
 
                         let splittedText = this.splitResponse(message.speech);
-                        splittedText = "hello...." + splittedText
-
                         splittedText.forEach(s => {
                             facebookMessages.push({text: s});
                         });
