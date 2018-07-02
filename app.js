@@ -342,6 +342,10 @@ class FacebookBot {
         switch (action) {
             case "personal-details-for-job-application":
                 let userContact = contexts[0].parameters['user-contact'];
+                let userName = contexts[0].parameters['user-name'];
+                let userEmail = contexts[0].parameters['user-email'];
+                console.log("User Name is: ", userName);
+                console.log("User Email is: ", userEmail);
                 if (userContact.length <=0)
                     userContact = '';
                 console.log("User Contact is: ", userContact);
