@@ -7,8 +7,6 @@ const uuid = require('uuid');
 const request = require('request');
 const JSONbig = require('json-bigint');
 const async = require('async');
-const mqtt = require("mqtt");
-
 
 const REST_PORT = (process.env.PORT || 5000);
 const APIAI_ACCESS_TOKEN = process.env.APIAI_ACCESS_TOKEN || 'dba14d61ec224282bb35bc57a24d0fa4';
@@ -29,8 +27,6 @@ class FacebookBot {
         this.sessionIds = new Map();
         this.messagesDelay = 200;
     }
-
-
 
 
     doDataResponse(sender, facebookResponseData) {
@@ -342,68 +338,31 @@ class FacebookBot {
         }
     }
 
-
     handleApiAiAction(sender, action, responseMessages, contexts, parameters) {
         switch (action) {
             case "personal-details-for-job-application":
                 let userContact = contexts[0].parameters['user-contact'];
-                if (userContact.length <= 0)
+                let userName = contexts[0].parameters['user-name'];
+                let userEmail = contexts[0].parameters['user-email'];
+                console.log("User Name is: ", userName);
+                console.log("User Email is: ", userEmail);
+                if (userContact.length <=0)
                     userContact = '';
                 console.log("User Contact is: ", userContact);
-
                 this.doRichContentResponse(sender, responseMessages);
                 break;
             default:
                 //unhandled action, just send back the text
                 console.log("Entering handleApiAiAction...........");
                 //console.log("Action is: ", action);
-                console.log("=======RESPONSE TEXT======", responseMessages);
+                console.log("=======RESPONSE TEXT======",responseMessages);
                 this.doRichContentResponse(sender, responseMessages);
         }
     }
 
-    connectToMQTT(msg) {
-        var url = 'mqtt://m14.cloudmqtt.com:16129';
-
-        var options = {
-            clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
-            username: 'user1',
-            password: 'password'
-        };
-
-        var client;
-        if (client !== null || !client.toString().trim() === "") {
-            client = mqtt.connect(url, options);
-        }
-        client.on('connect', function () {
-            console.log("Connection is made successfully");
-            if (msg === "on") {
-                console.log("Inside if condition ON");
-                client.publish('mytopic', "LightOn");
-                console.log("xxxxxxxxxxxx");
-                client.end();
-            }
-
-            if (msg === "off") {
-                console.log("Inside if condition OFF");
-                client.publish('mytopic', "LightOff");
-                console.log("yyyyyyyyyy");
-                client.end();
-            }
-        });
-
-
-
-    }
     doApiAiRequest(apiaiRequest, sender) {
         apiaiRequest.on('response', (response) => {
             let responseText = response.result.fulfillment.speech;
-            if (responseText.indexOf("turned on") != -1) {
-                this.connectToMQTT("on")
-            }
-            if (responseText.indexOf("turned off") != -1) {
-                this.connectToMQTT("off")
-            }
             let responseData = response.result.fulfillment.data;
             let responseMessages = response.result.fulfillment.messages;
             console.log("ResponseText ", responseText);
@@ -598,7 +557,7 @@ app.get('/webhook/', (req, res) => {
             facebookBot.doSubscribeRequest();
         }, 3000);
     } else {
-        res.send('Error, wrong validation token..');
+        res.send('Error, wrong validation token');
     }
 });
 
@@ -659,9 +618,6 @@ app.post('/webhook/', (req, res) => {
     }
 
 });
-
-
-
 
 app.listen(REST_PORT, () => {
     console.log('Rest service ready on port ' + REST_PORT);
