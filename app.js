@@ -363,12 +363,12 @@ class FacebookBot {
     }
 
     connectToMQTT(msg) {
-        var url = 'mqtt://m14.cloudmqtt.com:16129';
+        var url = 'mqtt://m15.cloudmqtt.com:12300';
 
         var options = {
             clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
-            username: 'user1',
-            password: 'password'
+            username: 'myuser',
+            password: 'mypassword'
         };
 
         var client;
@@ -379,6 +379,7 @@ class FacebookBot {
             console.log("Connection is made successfully");
             if (msg === "on") {
                 console.log("Inside if condition ON");
+                console.log(client);
                 client.publish('mytopic', "LightOn");
                 console.log("xxxxxxxxxxxx");
                 client.end();
