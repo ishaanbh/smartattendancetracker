@@ -16,6 +16,7 @@
     "express": "^4.13.3",
     "html-entities": "^1.2.0",
     "json-bigint": "^0.2.0",
+    "mqtt": "^2.18.8",
     "request": "^2.73.0",
     "uuid": "^3.0.1"
   },
